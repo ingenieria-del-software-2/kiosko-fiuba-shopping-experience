@@ -23,7 +23,7 @@ func NewCartService(cartRepository repository.CartRepository) *CartService {
 }
 
 // CreateCart creates a new empty cart for a user
-func (s *CartService) CreateCart(ctx context.Context, req *dto.CartCreateRequest) (*dto.CartDTO, error) {
+func (s *CartService) CreateCart(ctx context.Context, req *dto.CartCreateRequest) (*dto.CartResponse, error) {
 	userID, err := uuid.Parse(req.UserID)
 	if err != nil {
 		return nil, errors.New("invalid user ID format")
@@ -46,7 +46,7 @@ func (s *CartService) CreateCart(ctx context.Context, req *dto.CartCreateRequest
 }
 
 // GetCart retrieves a cart by ID
-func (s *CartService) GetCart(ctx context.Context, cartID string) (*dto.CartDTO, error) {
+func (s *CartService) GetCart(ctx context.Context, cartID string) (*dto.CartResponse, error) {
 	id, err := uuid.Parse(cartID)
 	if err != nil {
 		return nil, errors.New("invalid cart ID format")
@@ -61,7 +61,7 @@ func (s *CartService) GetCart(ctx context.Context, cartID string) (*dto.CartDTO,
 }
 
 // AddCartItem adds a product to a cart
-func (s *CartService) AddCartItem(ctx context.Context, cartID string, req *dto.CartItemRequest) (*dto.CartDTO, error) {
+func (s *CartService) AddCartItem(ctx context.Context, cartID string, req *dto.CartItemRequest) (*dto.CartResponse, error) {
 	id, err := uuid.Parse(cartID)
 	if err != nil {
 		return nil, errors.New("invalid cart ID format")
@@ -89,7 +89,7 @@ func (s *CartService) AddCartItem(ctx context.Context, cartID string, req *dto.C
 }
 
 // UpdateCartItem updates the quantity of a cart item
-func (s *CartService) UpdateCartItem(ctx context.Context, cartID string, itemID string, req *dto.CartItemUpdateRequest) (*dto.CartDTO, error) {
+func (s *CartService) UpdateCartItem(ctx context.Context, cartID string, itemID string, req *dto.CartItemUpdateRequest) (*dto.CartResponse, error) {
 	cartUUID, err := uuid.Parse(cartID)
 	if err != nil {
 		return nil, errors.New("invalid cart ID format")

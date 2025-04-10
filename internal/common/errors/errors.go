@@ -5,40 +5,20 @@ import (
 	"net/http"
 )
 
-// ErrorResponse represents the structure of error responses
+// ErrorResponse represents the structure of API error responses
 type ErrorResponse struct {
-	Code    string      `json:"code"`
-	Message string      `json:"message"`
-	Details interface{} `json:"details,omitempty"`
+	Status  int    `json:"status"`
+	Message string `json:"message"`
 }
 
-// WriteErrorResponse writes an error response with the given status code and message
-func WriteErrorResponse(w http.ResponseWriter, statusCode int, message string) {
-	// Map status codes to error codes
-	var code string
-	switch statusCode {
-	case http.StatusBadRequest:
-		code = "BAD_REQUEST"
-	case http.StatusNotFound:
-		code = "NOT_FOUND"
-	case http.StatusForbidden:
-		code = "FORBIDDEN"
-	case http.StatusConflict:
-		code = "CONFLICT"
-	case http.StatusUnprocessableEntity:
-		code = "UNPROCESSABLE_ENTITY"
-	default:
-		code = "INTERNAL_SERVER_ERROR"
-	}
-
-	// Create the error response
+// WriteErrorResponse writes an error response to the response writer
+func WriteErrorResponse(w http.ResponseWriter, status int, message string) {
 	response := ErrorResponse{
-		Code:    code,
+		Status:  status,
 		Message: message,
 	}
 
-	// Write the response
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
+	w.WriteHeader(status)
 	json.NewEncoder(w).Encode(response)
 }

@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	_ "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/docs" // Import generated Swagger docs
 	cartHttp "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/infrastructure/http"
 	checkoutHttp "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/infrastructure/http"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // RegisterRoutes registers all API routes
@@ -15,14 +17,31 @@ func RegisterRoutes(
 	checkoutHandler *checkoutHttp.CheckoutHandler,
 	shippingHandler *checkoutHttp.ShippingHandler,
 ) {
+	// Create an API subrouter
+	apiRouter := router.PathPrefix("/api").Subrouter()
+
 	// Health check endpoint
-	router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	// @Summary Health check
+	// @Description Get service health status
+	// @Tags health
+	// @Produce json
+	// @Success 200 {object} map[string]string "Service is healthy"
+	// @Router /api/health [get]
+	apiRouter.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(`{"status":"ok","service":"shopping-experience"}`))
 	}).Methods("GET")
 
+	// Swagger documentation
+	apiRouter.PathPrefix("/docs/").Handler(httpSwagger.Handler(
+		httpSwagger.URL("/api/docs/doc.json"), // The URL pointing to API definition
+		httpSwagger.DeepLinking(true),
+		httpSwagger.DocExpansion("none"),
+		httpSwagger.DomID("swagger-ui"),
+	))
+
 	// Register routes for each handler
-	cartHandler.RegisterRoutes(router)
-	checkoutHandler.RegisterRoutes(router)
-	shippingHandler.RegisterRoutes(router)
+	cartHandler.RegisterRoutes(apiRouter)
+	checkoutHandler.RegisterRoutes(apiRouter)
+	shippingHandler.RegisterRoutes(apiRouter)
 }

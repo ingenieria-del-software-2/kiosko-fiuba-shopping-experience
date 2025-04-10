@@ -12,6 +12,20 @@ import (
 	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/database"
 )
 
+// @title Shopping Experience API
+// @version 1.0
+// @description This is the Shopping Experience API for the Kiosko FIUBA e-commerce platform
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.email support@kioskofiuba.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8001
+// @BasePath /api
+// @schemes http
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

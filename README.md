@@ -75,6 +75,11 @@ shopping-experience/
 │   ├── logging/           # Logging utilities
 │   └── validation/        # Input validation
 │
+├── docs/                  # 📝 API Documentation
+│   ├── docs.go            # Generated Swagger docs
+│   ├── swagger.json       # Swagger JSON specification
+│   └── swagger.yaml       # Swagger YAML specification
+│
 └── migrations/            # 🔄 Database migrations
     ├── cart/              # Cart schema migrations
     └── checkout/          # Checkout schema migrations
@@ -115,35 +120,59 @@ Key components:
 - **Application Services**: `CheckoutService`, `ShippingService`
 - **Infrastructure**: PostgreSQL implementations, HTTP handlers
 
+## 📝 API Documentation
+
+The API is documented using Swagger (OpenAPI). The Swagger UI is available at:
+
+```
+http://localhost:8001/api/docs/
+```
+
+You can use this interface to:
+- Explore all available API endpoints
+- Test API calls directly from the browser
+- View request/response models
+- Understand the expected parameters and responses
+
+To regenerate the Swagger documentation after making changes to API annotations, run:
+
+```bash
+swag init -g cmd/shopping-experience/main.go -o docs
+```
+
 ## 🔌 API Endpoints
 
-The microservice exposes the following API endpoints:
+All API endpoints are available under the `/api` path prefix:
 
 ### Cart Management
 
-- `POST /carts` - Create a new cart
-- `GET /carts/{cartId}` - Get a cart by ID
-- `DELETE /carts/{cartId}` - Delete a cart
-- `POST /carts/{cartId}/items` - Add an item to a cart
-- `PUT /carts/{cartId}/items/{itemId}` - Update a cart item
-- `DELETE /carts/{cartId}/items/{itemId}` - Remove an item from a cart
+- `POST /api/carts` - Create a new cart
+- `GET /api/carts/{cartId}` - Get a cart by ID
+- `DELETE /api/carts/{cartId}` - Delete a cart
+- `POST /api/carts/{cartId}/items` - Add an item to a cart
+- `PUT /api/carts/{cartId}/items/{itemId}` - Update a cart item
+- `DELETE /api/carts/{cartId}/items/{itemId}` - Remove an item from a cart
 
 ### Checkout Process
 
-- `POST /checkout/init` - Initialize a checkout from a cart
-- `GET /checkout/{checkoutId}` - Get checkout details
-- `PUT /checkout/{checkoutId}/shipping` - Update shipping details
-- `PUT /checkout/{checkoutId}/payment-method` - Set payment method
-- `POST /checkout/{checkoutId}/complete` - Complete the checkout process
+- `POST /api/checkout/init` - Initialize a checkout from a cart
+- `GET /api/checkout/{checkoutId}` - Get checkout details
+- `PUT /api/checkout/{checkoutId}/shipping` - Update shipping details
+- `PUT /api/checkout/{checkoutId}/payment-method` - Set payment method
+- `POST /api/checkout/{checkoutId}/complete` - Complete the checkout process
 
 ### Shipping Management
 
-- `POST /shipping/addresses` - Add a shipping address
-- `GET /shipping/addresses` - Get all shipping addresses for a user
-- `GET /shipping/addresses/{addressId}` - Get a shipping address by ID
-- `PUT /shipping/addresses/{addressId}` - Update a shipping address
-- `DELETE /shipping/addresses/{addressId}` - Delete a shipping address
-- `GET /shipping/methods` - Get all available shipping methods
+- `POST /api/shipping/addresses` - Add a shipping address
+- `GET /api/shipping/addresses` - Get all shipping addresses for a user
+- `GET /api/shipping/addresses/{addressId}` - Get a shipping address by ID
+- `PUT /api/shipping/addresses/{addressId}` - Update a shipping address
+- `DELETE /api/shipping/addresses/{addressId}` - Delete a shipping address
+- `GET /api/shipping/methods` - Get all available shipping methods
+
+### Health Check
+
+- `GET /api/health` - Check service health status
 
 ## 🐳 Docker
 
@@ -165,11 +194,18 @@ This command exposes the microservice on port 8001 and enables auto-reload for f
 
 ### Running Migrations
 
-Database migrations are automatically applied when starting the application with docker-compose. However, you can also run them manually:
+Database migrations are automatically applied when using the migrations profile. Run migrations with:
 
 ```bash
 # Apply all pending migrations
-docker-compose run --rm api migrate up
+docker-compose --profile migrations up
+```
+
+You can also run them manually:
+
+```bash
+# Apply all pending migrations
+docker-compose run --rm migrator
 
 # Generate a new migration
 docker-compose run --rm api migrate create -ext sql -dir /migrations/cart -seq create_carts_table

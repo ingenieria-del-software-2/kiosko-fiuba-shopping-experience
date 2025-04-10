@@ -22,6 +22,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      # All environment variables now use the SHOPPING_EXPERIENCE_ prefix
       SHOPPING_EXPERIENCE_HOST: 0.0.0.0
       SHOPPING_EXPERIENCE_PORT: 8001
       SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
@@ -36,6 +37,7 @@ services:
       - ./internal:/app/internal
       - ./pkg:/app/pkg
       - ./migrations:/app/migrations
+      - ./docs:/app/docs
 
   db:
     image: postgres:16.3-bullseye

@@ -15,8 +15,8 @@ type CartItemDTO struct {
 	ImageURL  string  `json:"imageUrl"`
 }
 
-// CartDTO represents cart data for API responses
-type CartDTO struct {
+// CartResponse represents cart data for API responses
+type CartResponse struct {
 	ID         string        `json:"id"`
 	UserID     string        `json:"userId"`
 	Items      []CartItemDTO `json:"items"`
@@ -45,8 +45,8 @@ type CartItemUpdateRequest struct {
 	Quantity int `json:"quantity" validate:"required,gt=0"`
 }
 
-// FromDomain converts a cart domain model to a DTO
-func CartFromDomain(cart *model.Cart) *CartDTO {
+// CartFromDomain converts a cart domain model to a response DTO
+func CartFromDomain(cart *model.Cart) *CartResponse {
 	items := make([]CartItemDTO, len(cart.Items))
 	for i, item := range cart.Items {
 		items[i] = CartItemDTO{
@@ -60,7 +60,7 @@ func CartFromDomain(cart *model.Cart) *CartDTO {
 		}
 	}
 
-	return &CartDTO{
+	return &CartResponse{
 		ID:         cart.ID.String(),
 		UserID:     cart.UserID.String(),
 		Items:      items,

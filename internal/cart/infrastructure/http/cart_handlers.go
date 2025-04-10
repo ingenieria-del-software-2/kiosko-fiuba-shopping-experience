@@ -33,6 +33,16 @@ func (h *CartHandler) RegisterRoutes(router *mux.Router) {
 }
 
 // CreateCart handles the request to create a new cart
+// @Summary Create a new cart
+// @Description Create a new shopping cart for a user
+// @Tags carts
+// @Accept json
+// @Produce json
+// @Param request body dto.CartCreateRequest true "Cart creation request"
+// @Success 201 {object} dto.CartResponse "Cart created successfully"
+// @Failure 400 {object} errors.ErrorResponse "Invalid request"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Router /api/carts [post]
 func (h *CartHandler) CreateCart(w http.ResponseWriter, r *http.Request) {
 	var req dto.CartCreateRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -52,6 +62,16 @@ func (h *CartHandler) CreateCart(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetCart handles the request to get a cart by ID
+// @Summary Get a cart by ID
+// @Description Get details of a shopping cart by its ID
+// @Tags carts
+// @Accept json
+// @Produce json
+// @Param cartId path string true "Cart ID" format(uuid)
+// @Success 200 {object} dto.CartResponse "Cart retrieved successfully"
+// @Failure 404 {object} errors.ErrorResponse "Cart not found"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Router /api/carts/{cartId} [get]
 func (h *CartHandler) GetCart(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cartID := vars["cartId"]
@@ -71,6 +91,16 @@ func (h *CartHandler) GetCart(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteCart handles the request to delete a cart
+// @Summary Delete a cart
+// @Description Delete a shopping cart by its ID
+// @Tags carts
+// @Accept json
+// @Produce json
+// @Param cartId path string true "Cart ID" format(uuid)
+// @Success 204 "Cart deleted successfully"
+// @Failure 404 {object} errors.ErrorResponse "Cart not found"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Router /api/carts/{cartId} [delete]
 func (h *CartHandler) DeleteCart(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cartID := vars["cartId"]
@@ -89,6 +119,18 @@ func (h *CartHandler) DeleteCart(w http.ResponseWriter, r *http.Request) {
 }
 
 // AddCartItem handles the request to add an item to a cart
+// @Summary Add item to cart
+// @Description Add a product item to a shopping cart
+// @Tags carts
+// @Accept json
+// @Produce json
+// @Param cartId path string true "Cart ID" format(uuid)
+// @Param request body dto.CartItemRequest true "Item details"
+// @Success 200 {object} dto.CartResponse "Item added successfully"
+// @Failure 400 {object} errors.ErrorResponse "Invalid request"
+// @Failure 404 {object} errors.ErrorResponse "Cart not found"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Router /api/carts/{cartId}/items [post]
 func (h *CartHandler) AddCartItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cartID := vars["cartId"]
@@ -114,6 +156,19 @@ func (h *CartHandler) AddCartItem(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateCartItem handles the request to update an item in a cart
+// @Summary Update cart item
+// @Description Update the quantity of an item in a shopping cart
+// @Tags carts
+// @Accept json
+// @Produce json
+// @Param cartId path string true "Cart ID" format(uuid)
+// @Param itemId path string true "Item ID" format(uuid)
+// @Param request body dto.CartItemUpdateRequest true "Updated item details"
+// @Success 200 {object} dto.CartResponse "Item updated successfully"
+// @Failure 400 {object} errors.ErrorResponse "Invalid request"
+// @Failure 404 {object} errors.ErrorResponse "Cart or item not found"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Router /api/carts/{cartId}/items/{itemId} [put]
 func (h *CartHandler) UpdateCartItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cartID := vars["cartId"]
@@ -140,6 +195,17 @@ func (h *CartHandler) UpdateCartItem(w http.ResponseWriter, r *http.Request) {
 }
 
 // RemoveCartItem handles the request to remove an item from a cart
+// @Summary Remove item from cart
+// @Description Remove an item from a shopping cart
+// @Tags carts
+// @Accept json
+// @Produce json
+// @Param cartId path string true "Cart ID" format(uuid)
+// @Param itemId path string true "Item ID" format(uuid)
+// @Success 204 "Item removed successfully"
+// @Failure 404 {object} errors.ErrorResponse "Cart or item not found"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Router /api/carts/{cartId}/items/{itemId} [delete]
 func (h *CartHandler) RemoveCartItem(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	cartID := vars["cartId"]
