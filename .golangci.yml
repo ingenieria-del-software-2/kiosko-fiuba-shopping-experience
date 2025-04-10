@@ -17,7 +17,7 @@ linters-settings:
 
 issues:
   exclude-rules:
-    - path: _test\.go
+    - text: "error return value of .* is not checked"
       linters:
         - errcheck
 
