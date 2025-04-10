@@ -5,9 +5,9 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/kiosko-fiuba/shopping-experience/internal/cart/app/services/dto"
-	"github.com/kiosko-fiuba/shopping-experience/internal/cart/domain/model"
-	"github.com/kiosko-fiuba/shopping-experience/internal/cart/domain/repository"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/app/services/dto"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/domain/model"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/domain/repository"
 )
 
 // CartService handles operations related to shopping carts

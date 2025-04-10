@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/kiosko-fiuba/shopping-experience/internal/checkout/domain/model"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/domain/model"
 )
 
 // CheckoutRepository defines the interface for checkout persistence operations

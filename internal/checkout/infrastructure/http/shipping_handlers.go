@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/kiosko-fiuba/shopping-experience/internal/checkout/app/services"
-	"github.com/kiosko-fiuba/shopping-experience/internal/checkout/app/services/dto"
-	"github.com/kiosko-fiuba/shopping-experience/internal/common/errors"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/app/services"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/app/services/dto"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/errors"
 )
 
 // ShippingHandler handles HTTP requests for shipping operations

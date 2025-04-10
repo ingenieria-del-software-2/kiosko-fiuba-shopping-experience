@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	cartHttp "github.com/kiosko-fiuba/shopping-experience/internal/cart/infrastructure/http"
-	checkoutHttp "github.com/kiosko-fiuba/shopping-experience/internal/checkout/infrastructure/http"
+	cartHttp "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/infrastructure/http"
+	checkoutHttp "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/infrastructure/http"
 )
 
 // RegisterRoutes registers all API routes

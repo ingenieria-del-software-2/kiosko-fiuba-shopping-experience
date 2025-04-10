@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kiosko-fiuba/shopping-experience/internal/api"
-	"github.com/kiosko-fiuba/shopping-experience/internal/common/database"
-	"github.com/kiosko-fiuba/shopping-experience/internal/common/server"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/api"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/database"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/server"
 )
 
 func main() {

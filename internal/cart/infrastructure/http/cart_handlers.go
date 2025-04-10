@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/kiosko-fiuba/shopping-experience/internal/cart/app/services"
-	"github.com/kiosko-fiuba/shopping-experience/internal/cart/app/services/dto"
-	"github.com/kiosko-fiuba/shopping-experience/internal/common/errors"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/app/services"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/app/services/dto"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/errors"
 )
 
 // CartHandler handles HTTP requests for cart operations

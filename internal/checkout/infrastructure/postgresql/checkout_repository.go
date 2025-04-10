@@ -7,8 +7,8 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/kiosko-fiuba/shopping-experience/internal/checkout/domain/model"
-	"github.com/kiosko-fiuba/shopping-experience/internal/checkout/domain/repository"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/domain/model"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/domain/repository"
 )
 
 // PostgreSQLCheckoutRepository implements the CheckoutRepository interface using PostgreSQL

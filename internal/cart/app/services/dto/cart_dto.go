@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/kiosko-fiuba/shopping-experience/internal/cart/domain/model"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/domain/model"
 )
 
 // CartItemDTO represents cart item data for API responses

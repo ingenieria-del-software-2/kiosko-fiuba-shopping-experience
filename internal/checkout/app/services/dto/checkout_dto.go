@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/kiosko-fiuba/shopping-experience/internal/checkout/domain/model"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/domain/model"
 )
 
 // CheckoutItemDTO represents an item in a checkout

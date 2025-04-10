@@ -8,12 +8,12 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	cartService "github.com/kiosko-fiuba/shopping-experience/internal/cart/app/services"
-	cartHttp "github.com/kiosko-fiuba/shopping-experience/internal/cart/infrastructure/http"
-	cartRepo "github.com/kiosko-fiuba/shopping-experience/internal/cart/infrastructure/postgresql"
-	checkoutService "github.com/kiosko-fiuba/shopping-experience/internal/checkout/app/services"
-	checkoutHttp "github.com/kiosko-fiuba/shopping-experience/internal/checkout/infrastructure/http"
-	checkoutRepo "github.com/kiosko-fiuba/shopping-experience/internal/checkout/infrastructure/postgresql"
+	cartService "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/app/services"
+	cartHttp "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/infrastructure/http"
+	cartRepo "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/infrastructure/postgresql"
+	checkoutService "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/app/services"
+	checkoutHttp "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/infrastructure/http"
+	checkoutRepo "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/infrastructure/postgresql"
 )
 
 // Server represents the API server
