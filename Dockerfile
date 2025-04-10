@@ -4,13 +4,14 @@ FROM golang:1.23-alpine3.19 AS builder
 WORKDIR /app
 
 # Install build dependencies
-RUN apk add --no-cache gcc musl-dev
+RUN apk add --no-cache gcc musl-dev git
 
 # Copy go.mod and go.sum files
 COPY go.mod go.sum ./
 
 # Download dependencies
 RUN go mod download
+RUN go mod tidy
 
 # Copy the source code
 COPY . .
@@ -49,7 +50,7 @@ FROM golang:1.23-alpine AS dev
 WORKDIR /app
 
 # Install development dependencies
-RUN apk add --no-cache gcc musl-dev postgresql-client
+RUN apk add --no-cache gcc musl-dev postgresql-client git
 
 # Install air for hot reloading
 RUN go install github.com/air-verse/air@latest

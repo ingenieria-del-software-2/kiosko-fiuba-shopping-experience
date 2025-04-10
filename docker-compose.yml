@@ -21,6 +21,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
     environment:
       # All environment variables now use the SHOPPING_EXPERIENCE_ prefix
       SHOPPING_EXPERIENCE_HOST: 0.0.0.0
@@ -57,13 +59,15 @@ services:
       timeout: 3s
       retries: 40
 
-  # Migrator service - only runs when explicitly invoked with docker-compose run migrator
-  # or when using the profile: docker-compose --profile migrations up
+  # GORM-based migrator service that creates database schema from Go models
   migrator:
-    image: shopping-experience:${SHOPPING_EXPERIENCE_VERSION:-latest}
-    profiles: ["migrations"]
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: builder
+    image: shopping-experience-builder:${SHOPPING_EXPERIENCE_VERSION:-latest}
     restart: "no"
-    command: /app/shopping-experience migrate up
+    command: go run cmd/migrator/main.go
     environment:
       SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
       SHOPPING_EXPERIENCE_DB_PORT: 5432
@@ -75,7 +79,11 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./migrations:/app/migrations
+      - ./cmd:/app/cmd
+      - ./internal:/app/internal
+      - ./pkg:/app/pkg
+      - ./go.mod:/app/go.mod
+      - ./go.sum:/app/go.sum
 
 volumes:
   shopping-experience-db-data:
