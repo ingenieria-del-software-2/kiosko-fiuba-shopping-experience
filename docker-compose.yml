@@ -55,8 +55,11 @@ services:
       timeout: 3s
       retries: 40
 
+  # Migrator service - only runs when explicitly invoked with docker-compose run migrator
+  # or when using the profile: docker-compose --profile migrations up
   migrator:
     image: shopping-experience:${SHOPPING_EXPERIENCE_VERSION:-latest}
+    profiles: ["migrations"]
     restart: "no"
     command: /app/shopping-experience migrate up
     environment:
