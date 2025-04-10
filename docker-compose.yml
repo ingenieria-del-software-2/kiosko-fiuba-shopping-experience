@@ -9,9 +9,8 @@ services:
     labels:
       # Enables traefik for this container
       - traefik.enable=true
-      - traefik.http.routers.shopping_experience.rule=Host(`${SHOPPING_EXPERIENCE_TRAEFIK_HOST:-shopping_experience.localhost}`)
-      - traefik.http.routers.shopping_experience.entrypoints=http
-      - traefik.http.routers.shopping_experience.service=shopping_experience
+      - traefik.http.routers.shopping_experience.rule=Host(`${SHOPPING_EXPERIENCE_TRAEFIK_HOST:-shopping-experience.localhost}`)
+      - traefik.http.routers.shopping_experience.entrypoints=web
       - traefik.http.services.shopping_experience.loadbalancer.server.port=${SHOPPING_EXPERIENCE_PORT:-8001}
     ports:
       - "8001:8001"
@@ -67,6 +66,8 @@ services:
       target: builder
     image: shopping-experience-builder:${SHOPPING_EXPERIENCE_VERSION:-latest}
     restart: "no"
+    labels:
+      - traefik.enable=false
     command: go run cmd/migrator/main.go
     environment:
       SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
@@ -92,5 +93,4 @@ volumes:
 networks:
   # Network for traefik
   traefik-shared:
-    name: traefik-shared
     external: true
