@@ -1,4 +1,4 @@
-FROM golang:1.22.1-alpine3.19 AS builder
+FROM golang:1.23.1-alpine3.19 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -30,8 +30,8 @@ WORKDIR /app
 # Copy the binary from the builder stage
 COPY --from=builder /app/shopping-experience .
 
-# Copy migrations
-COPY migrations/ /app/migrations/
+# Create migrations directory (will be populated at runtime if needed)
+RUN mkdir -p /app/migrations/
 
 # Set executable permissions
 RUN chmod +x /app/shopping-experience
@@ -43,7 +43,7 @@ EXPOSE 8001
 CMD ["/app/shopping-experience"]
 
 # Development stage
-FROM golang:1.22-alpine AS dev
+FROM golang:1.23.1-alpine AS dev
 
 # Set working directory
 WORKDIR /app
@@ -52,9 +52,9 @@ WORKDIR /app
 RUN apk add --no-cache gcc musl-dev postgresql-client
 
 # Install air for hot reloading
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
-# Copy air configuration
+# Copy air configuration from project
 COPY .air.toml .
 
 # Command to run air for hot reloading
