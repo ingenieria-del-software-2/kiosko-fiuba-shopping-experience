@@ -1,4 +1,4 @@
-FROM golang:1.23.1-alpine3.19 AS builder
+FROM golang:1.23-alpine3.19 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -43,7 +43,7 @@ EXPOSE 8001
 CMD ["/app/shopping-experience"]
 
 # Development stage
-FROM golang:1.23.1-alpine AS dev
+FROM golang:1.23-alpine AS dev
 
 # Set working directory
 WORKDIR /app
