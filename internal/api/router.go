@@ -32,8 +32,8 @@ func RegisterRoutes(
 		w.Write([]byte(`{"status":"ok","service":"shopping-experience"}`))
 	}).Methods("GET")
 
-	// Swagger documentation
-	apiRouter.PathPrefix("/docs/").Handler(httpSwagger.Handler(
+	// Swagger documentation - add at root router level for better visibility
+	router.PathPrefix("/api/docs/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("/api/docs/doc.json"), // The URL pointing to API definition
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("none"),

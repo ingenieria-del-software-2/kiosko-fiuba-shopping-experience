@@ -24,12 +24,16 @@ func NewCartHandler(cartService *services.CartService) *CartHandler {
 
 // RegisterRoutes registers the cart routes on the given router
 func (h *CartHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/carts", h.CreateCart).Methods("POST")
-	router.HandleFunc("/carts/{cartId}", h.GetCart).Methods("GET")
-	router.HandleFunc("/carts/{cartId}", h.DeleteCart).Methods("DELETE")
-	router.HandleFunc("/carts/{cartId}/items", h.AddCartItem).Methods("POST")
-	router.HandleFunc("/carts/{cartId}/items/{itemId}", h.UpdateCartItem).Methods("PUT")
-	router.HandleFunc("/carts/{cartId}/items/{itemId}", h.RemoveCartItem).Methods("DELETE")
+	// Create a subrouter for cart routes
+	cartRouter := router.PathPrefix("/carts").Subrouter()
+
+	// Register routes
+	cartRouter.HandleFunc("", h.CreateCart).Methods("POST")
+	cartRouter.HandleFunc("/{cartId}", h.GetCart).Methods("GET")
+	cartRouter.HandleFunc("/{cartId}", h.DeleteCart).Methods("DELETE")
+	cartRouter.HandleFunc("/{cartId}/items", h.AddCartItem).Methods("POST")
+	cartRouter.HandleFunc("/{cartId}/items/{itemId}", h.UpdateCartItem).Methods("PUT")
+	cartRouter.HandleFunc("/{cartId}/items/{itemId}", h.RemoveCartItem).Methods("DELETE")
 }
 
 // CreateCart handles the request to create a new cart

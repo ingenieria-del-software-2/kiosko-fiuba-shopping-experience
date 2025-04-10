@@ -24,12 +24,16 @@ func NewShippingHandler(shippingService *services.ShippingService) *ShippingHand
 
 // RegisterRoutes registers the shipping routes on the given router
 func (h *ShippingHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/shipping/addresses", h.AddShippingAddress).Methods("POST")
-	router.HandleFunc("/shipping/addresses", h.GetUserShippingAddresses).Methods("GET")
-	router.HandleFunc("/shipping/addresses/{addressId}", h.GetShippingAddress).Methods("GET")
-	router.HandleFunc("/shipping/addresses/{addressId}", h.UpdateShippingAddress).Methods("PUT")
-	router.HandleFunc("/shipping/addresses/{addressId}", h.DeleteShippingAddress).Methods("DELETE")
-	router.HandleFunc("/shipping/methods", h.GetShippingMethods).Methods("GET")
+	// Create a subrouter for shipping routes
+	shippingRouter := router.PathPrefix("/shipping").Subrouter()
+
+	// Register routes
+	shippingRouter.HandleFunc("/addresses", h.AddShippingAddress).Methods("POST")
+	shippingRouter.HandleFunc("/addresses", h.GetUserShippingAddresses).Methods("GET")
+	shippingRouter.HandleFunc("/addresses/{addressId}", h.GetShippingAddress).Methods("GET")
+	shippingRouter.HandleFunc("/addresses/{addressId}", h.UpdateShippingAddress).Methods("PUT")
+	shippingRouter.HandleFunc("/addresses/{addressId}", h.DeleteShippingAddress).Methods("DELETE")
+	shippingRouter.HandleFunc("/methods", h.GetShippingMethods).Methods("GET")
 }
 
 // AddShippingAddress handles the request to add a shipping address

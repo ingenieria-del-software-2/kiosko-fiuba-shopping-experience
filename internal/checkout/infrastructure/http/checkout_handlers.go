@@ -24,11 +24,15 @@ func NewCheckoutHandler(checkoutService *services.CheckoutService) *CheckoutHand
 
 // RegisterRoutes registers the checkout routes on the given router
 func (h *CheckoutHandler) RegisterRoutes(router *mux.Router) {
-	router.HandleFunc("/checkout/init", h.InitiateCheckout).Methods("POST")
-	router.HandleFunc("/checkout/{checkoutId}", h.GetCheckout).Methods("GET")
-	router.HandleFunc("/checkout/{checkoutId}/shipping", h.UpdateShipping).Methods("PUT")
-	router.HandleFunc("/checkout/{checkoutId}/payment-method", h.SetPaymentMethod).Methods("PUT")
-	router.HandleFunc("/checkout/{checkoutId}/complete", h.CompleteCheckout).Methods("POST")
+	// Create a subrouter for checkout routes
+	checkoutRouter := router.PathPrefix("/checkout").Subrouter()
+
+	// Register routes
+	checkoutRouter.HandleFunc("/init", h.InitiateCheckout).Methods("POST")
+	checkoutRouter.HandleFunc("/{checkoutId}", h.GetCheckout).Methods("GET")
+	checkoutRouter.HandleFunc("/{checkoutId}/shipping", h.UpdateShipping).Methods("PUT")
+	checkoutRouter.HandleFunc("/{checkoutId}/payment-method", h.SetPaymentMethod).Methods("PUT")
+	checkoutRouter.HandleFunc("/{checkoutId}/complete", h.CompleteCheckout).Methods("POST")
 }
 
 // InitiateCheckout handles the request to initialize a checkout
