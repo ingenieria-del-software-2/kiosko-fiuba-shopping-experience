@@ -3,9 +3,9 @@ package api
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 	cartService "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/cart/app/services"
@@ -14,6 +14,7 @@ import (
 	checkoutService "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/app/services"
 	checkoutHttp "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/infrastructure/http"
 	checkoutRepo "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/checkout/infrastructure/postgresql"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/config"
 )
 
 // Server represents the API server
@@ -22,7 +23,7 @@ type Server struct {
 }
 
 // NewServer creates a new API server with all dependencies wired up
-func NewServer(db *sql.DB) *Server {
+func NewServer(db *sql.DB, cfg *config.Config) *Server {
 	router := mux.NewRouter()
 
 	// Initialize repositories
@@ -45,11 +46,11 @@ func NewServer(db *sql.DB) *Server {
 
 	// Create HTTP server
 	httpServer := &http.Server{
-		Addr:         ":8001",
+		Addr:         fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
 		Handler:      router,
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		IdleTimeout:  120 * time.Second,
+		ReadTimeout:  cfg.ReadTimeout,
+		WriteTimeout: cfg.WriteTimeout,
+		IdleTimeout:  cfg.IdleTimeout,
 	}
 
 	return &Server{

@@ -8,8 +8,8 @@ import (
 	"syscall"
 
 	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/api"
+	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/config"
 	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/database"
-	"github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/internal/common/server"
 )
 
 func main() {
@@ -20,15 +20,21 @@ func main() {
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
+	// Load configuration
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+
 	// Initialize database connection
-	db, err := database.NewPostgresConnection()
+	db, err := database.NewPostgresConnectionWithConfig(cfg)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer db.Close()
 
 	// Initialize API server
-	srv := api.NewServer(db)
+	srv := api.NewServer(db, cfg)
 
 	// Start server
 	go func() {
@@ -38,7 +44,7 @@ func main() {
 		}
 	}()
 
-	log.Println("Shopping Experience Microservice started")
+	log.Printf("Shopping Experience Microservice started on %s:%d", cfg.Host, cfg.Port)
 
 	// Wait for termination signal
 	select {
@@ -49,7 +55,7 @@ func main() {
 	}
 
 	// Graceful shutdown
-	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), server.ShutdownTimeout)
+	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
 	defer shutdownCancel()
 
 	if err := srv.Shutdown(shutdownCtx); err != nil {
