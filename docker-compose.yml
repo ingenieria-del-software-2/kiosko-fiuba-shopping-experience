@@ -1,0 +1,83 @@
+services:
+  api: &main_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: prod
+    image: shopping-experience:${SHOPPING_EXPERIENCE_VERSION:-latest}
+    restart: always
+    env_file:
+      - .env
+    labels:
+      # Enables traefik for this container
+      - traefik.enable=true
+      - traefik.http.routers.shopping_experience.rule=Host(`${SHOPPING_EXPERIENCE_TRAEFIK_HOST:-shopping_experience.localhost}`)
+      - traefik.http.routers.shopping_experience.entrypoints=http
+      - traefik.http.routers.shopping_experience.service=shopping_experience
+      - traefik.http.services.shopping_experience.loadbalancer.server.port=${SHOPPING_EXPERIENCE_PORT:-8001}
+    ports:
+      - "8001:8001"
+    networks:
+      - default
+      - traefik-shared
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SHOPPING_EXPERIENCE_HOST: 0.0.0.0
+      SHOPPING_EXPERIENCE_PORT: 8001
+      SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
+      SHOPPING_EXPERIENCE_DB_PORT: 5432
+      SHOPPING_EXPERIENCE_DB_USER: shopping_experience
+      SHOPPING_EXPERIENCE_DB_PASS: shopping_experience
+      SHOPPING_EXPERIENCE_DB_NAME: shopping_experience
+      PRODUCT_CATALOG_SERVICE_URL: http://product_catalog:8000
+    volumes:
+      - ./cmd:/app/cmd
+      - ./internal:/app/internal
+      - ./pkg:/app/pkg
+      - ./migrations:/app/migrations
+
+  db:
+    image: postgres:16.3-bullseye
+    hostname: shopping-experience-db
+    environment:
+      POSTGRES_PASSWORD: "shopping_experience"
+      POSTGRES_USER: "shopping_experience"
+      POSTGRES_DB: "shopping_experience"
+    volumes:
+      - shopping-experience-db-data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: pg_isready -U shopping_experience
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    image: shopping-experience:${SHOPPING_EXPERIENCE_VERSION:-latest}
+    restart: "no"
+    command: /app/shopping-experience migrate up
+    environment:
+      SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
+      SHOPPING_EXPERIENCE_DB_PORT: 5432
+      SHOPPING_EXPERIENCE_DB_USER: shopping_experience
+      SHOPPING_EXPERIENCE_DB_PASS: shopping_experience
+      SHOPPING_EXPERIENCE_DB_NAME: shopping_experience
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/app/migrations
+
+volumes:
+  shopping-experience-db-data:
+    name: shopping-experience-db-data
+
+networks:
+  # Network for traefik
+  traefik-shared:
+    name: traefik-shared
+    external: true
