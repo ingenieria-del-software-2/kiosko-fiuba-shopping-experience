@@ -7,7 +7,7 @@ services:
     image: shopping-experience:${SHOPPING_EXPERIENCE_VERSION:-latest}
     restart: always
     env_file:
-      - .env
+      - .env.example
     labels:
       # Enables traefik for this container
       - traefik.enable=true
@@ -24,6 +24,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      # All environment variables now use the SHOPPING_EXPERIENCE_ prefix
       SHOPPING_EXPERIENCE_HOST: 0.0.0.0
       SHOPPING_EXPERIENCE_PORT: 8001
       SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
@@ -31,6 +32,7 @@ services:
       SHOPPING_EXPERIENCE_DB_USER: shopping_experience
       SHOPPING_EXPERIENCE_DB_PASS: shopping_experience
       SHOPPING_EXPERIENCE_DB_NAME: shopping_experience
+      SHOPPING_EXPERIENCE_DB_SSLMODE: disable
       PRODUCT_CATALOG_SERVICE_URL: http://product_catalog:8000
     volumes:
       - ./cmd:/app/cmd
@@ -66,6 +68,7 @@ services:
       SHOPPING_EXPERIENCE_DB_USER: shopping_experience
       SHOPPING_EXPERIENCE_DB_PASS: shopping_experience
       SHOPPING_EXPERIENCE_DB_NAME: shopping_experience
+      SHOPPING_EXPERIENCE_DB_SSLMODE: disable
     depends_on:
       db:
         condition: service_healthy
