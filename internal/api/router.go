@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	_ "github.com/ingenieria-del-software-2/kiosko-fiuba-shopping-experience/docs" // Import generated Swagger docs
@@ -32,9 +33,15 @@ func RegisterRoutes(
 		w.Write([]byte(`{"status":"ok","service":"shopping-experience"}`))
 	}).Methods("GET")
 
+	// Get API path prefix from environment or default to empty string
+	apiPathPrefix := os.Getenv("API_PATH_PREFIX")
+	if apiPathPrefix == "" {
+		apiPathPrefix = ""
+	}
+
 	// Swagger documentation - add at root router level for better visibility
 	router.PathPrefix("/api/docs/").Handler(httpSwagger.Handler(
-		httpSwagger.URL("/api/docs/doc.json"), // The URL pointing to API definition
+		httpSwagger.URL(apiPathPrefix+"/api/docs/doc.json"), // The URL pointing to API definition
 		httpSwagger.DeepLinking(true),
 		httpSwagger.DocExpansion("none"),
 		httpSwagger.DomID("swagger-ui"),
