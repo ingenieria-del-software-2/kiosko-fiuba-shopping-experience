@@ -1,0 +1,80 @@
+services:
+  api: &main_app
+    image: ${IMAGE_URI}
+    restart: always
+    labels:
+      # Enables traefik for this container
+      - traefik.enable=true
+      - traefik.http.routers.shopping_experience.rule=Host(`${SHOPPING_EXPERIENCE_TRAEFIK_HOST:-shopping-experience.localhost}`) || PathPrefix(`/shopping-experience`)
+      - traefik.http.routers.shopping_experience.entrypoints=web
+      - traefik.http.routers.shopping_experience.service=shopping_experience
+      - traefik.http.services.shopping_experience.loadbalancer.server.port=${SHOPPING_EXPERIENCE_PORT:-8001}
+      - traefik.http.middlewares.shopping_experience_strip.stripPrefix.prefixes=/shopping-experience
+      - traefik.http.routers.shopping_experience.middlewares=shopping_experience_strip
+    networks:
+      - traefik-shared
+    depends_on:
+      db:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      # All environment variables now use the SHOPPING_EXPERIENCE_ prefix
+      SHOPPING_EXPERIENCE_HOST: 0.0.0.0
+      SHOPPING_EXPERIENCE_PORT: 8001
+      SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
+      SHOPPING_EXPERIENCE_DB_PORT: 5432
+      SHOPPING_EXPERIENCE_DB_USER: shopping_experience
+      SHOPPING_EXPERIENCE_DB_PASS: shopping_experience
+      SHOPPING_EXPERIENCE_DB_NAME: shopping_experience
+      SHOPPING_EXPERIENCE_DB_SSLMODE: disable
+      PRODUCT_CATALOG_SERVICE_URL: http://product_catalog:8000
+
+  db:
+    image: postgres:16.3-bullseye
+    hostname: shopping-experience-db
+    environment:
+      POSTGRES_PASSWORD: "shopping_experience"
+      POSTGRES_USER: "shopping_experience"
+      POSTGRES_DB: "shopping_experience"
+    volumes:
+      - shopping-experience-db-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - traefik-shared
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: pg_isready -U shopping_experience
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  # GORM-based migrator service that creates database schema from Go models
+  migrator:
+    image: ${IMAGE_URI}
+    restart: "no"
+    labels:
+      - traefik.enable=false
+    command: go run cmd/migrator/main.go
+    networks:
+      - traefik-shared
+    environment:
+      SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
+      SHOPPING_EXPERIENCE_DB_PORT: 5432
+      SHOPPING_EXPERIENCE_DB_USER: shopping_experience
+      SHOPPING_EXPERIENCE_DB_PASS: shopping_experience
+      SHOPPING_EXPERIENCE_DB_NAME: shopping_experience
+      SHOPPING_EXPERIENCE_DB_SSLMODE: disable
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  shopping-experience-db-data:
+    name: shopping-experience-db-data
+
+networks:
+  # Network for traefik
+  traefik-shared:
+    external: true

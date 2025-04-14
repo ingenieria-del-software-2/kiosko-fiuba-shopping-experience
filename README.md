@@ -179,13 +179,7 @@ All API endpoints are available under the `/api` path prefix:
 You can start the project with docker using this command:
 
 ```bash
-docker-compose up --build
-```
-
-If you want to develop in docker with auto-reload add `-f docker-compose.dev.yml` to your docker command:
-
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose up --build
 ```
 
 This command exposes the microservice on port 8001 and enables auto-reload for faster development.
@@ -198,20 +192,20 @@ Database migrations are automatically applied when using the migrations profile.
 
 ```bash
 # Apply all pending migrations
-docker-compose --profile migrations up
+docker compose --profile migrations up
 ```
 
 You can also run them manually:
 
 ```bash
 # Apply all pending migrations
-docker-compose run --rm migrator
+docker compose run --rm migrator
 
 # Generate a new migration
-docker-compose run --rm api migrate create -ext sql -dir /migrations/cart -seq create_carts_table
+docker compose run --rm api migrate create -ext sql -dir /migrations/cart -seq create_carts_table
 
 # Revert last migration
-docker-compose run --rm api migrate down 1
+docker compose run --rm api migrate down 1
 ```
 
 ## 🧪 Testing

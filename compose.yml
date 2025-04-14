@@ -16,7 +16,6 @@ services:
       - "8001:8001"
     networks:
       - default
-      - traefik-shared
     depends_on:
       db:
         condition: service_healthy
@@ -52,6 +51,8 @@ services:
     restart: always
     ports:
       - "5433:5432"
+    networks:
+      - default
     healthcheck:
       test: pg_isready -U shopping_experience
       interval: 2s
@@ -69,6 +70,8 @@ services:
     labels:
       - traefik.enable=false
     command: go run cmd/migrator/main.go
+    networks:
+      - default
     environment:
       SHOPPING_EXPERIENCE_DB_HOST: shopping-experience-db
       SHOPPING_EXPERIENCE_DB_PORT: 5432
@@ -90,7 +93,3 @@ volumes:
   shopping-experience-db-data:
     name: shopping-experience-db-data
 
-networks:
-  # Network for traefik
-  traefik-shared:
-    external: true
