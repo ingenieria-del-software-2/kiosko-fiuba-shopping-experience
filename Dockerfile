@@ -22,7 +22,25 @@ RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o shopping-experien
 # Build the migrator
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o migrator ./cmd/migrator/main.go
 
-# Runtime stage
+# Development stage
+FROM golang:1.23-alpine AS dev
+
+# Set working directory
+WORKDIR /app
+
+# Install development dependencies
+RUN apk add --no-cache gcc musl-dev postgresql-client git
+
+# Install air for hot reloading
+RUN go install github.com/air-verse/air@latest
+
+# Copy air configuration from project
+COPY .air.toml .
+
+# Command to run air for hot reloading
+CMD ["air", "-c", ".air.toml"]
+
+# Runtime stage - This is now the final and default stage
 FROM alpine:3.19 AS prod
 
 # Install runtime dependencies
@@ -47,21 +65,3 @@ EXPOSE 8001
 
 # Command to run the application
 CMD ["/app/shopping-experience"]
-
-# Development stage
-FROM golang:1.23-alpine AS dev
-
-# Set working directory
-WORKDIR /app
-
-# Install development dependencies
-RUN apk add --no-cache gcc musl-dev postgresql-client git
-
-# Install air for hot reloading
-RUN go install github.com/air-verse/air@latest
-
-# Copy air configuration from project
-COPY .air.toml .
-
-# Command to run air for hot reloading
-CMD ["air", "-c", ".air.toml"]
