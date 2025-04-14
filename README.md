@@ -184,6 +184,10 @@ docker compose up --build
 
 This command exposes the microservice on port 8001 and enables auto-reload for faster development.
 
+### 📦 Container Repositories
+
+Unlike AWS ECR, GCP's Container Registry allows storing images with different names. For simplicity, we are using the naming convention `microservice_name/microservice_name` to emulate the same behavior as ECR.
+
 ## 🔄 Migrations
 
 ### Running Migrations
