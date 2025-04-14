@@ -36,13 +36,6 @@ jobs:
           username: oauth2accesstoken
           password: ${{ steps.auth.outputs.access_token }}
 
-      # ----- Repository Setup -----
-      - name: Check/Create Artifact Registry Repository
-        run: |
-          if ! gcloud artifacts repositories describe ${{ env.MICROSERVICE_NAME }} --location=${{ env.REGION }} &>/dev/null; then
-            gcloud artifacts repositories create ${{ env.MICROSERVICE_NAME }} --location=${{ env.REGION }} --repository-format=docker
-          fi
-
       # ----- Build & Push -----
       - name: Build and Push Docker image
         uses: docker/build-push-action@v5
