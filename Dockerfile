@@ -19,6 +19,9 @@ COPY . .
 # Build the application
 RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o shopping-experience ./cmd/shopping-experience/main.go
 
+# Build the migrator
+RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o migrator ./cmd/migrator/main.go
+
 # Runtime stage
 FROM alpine:3.19 AS prod
 
@@ -28,14 +31,16 @@ RUN apk add --no-cache ca-certificates tzdata postgresql-client
 # Set working directory
 WORKDIR /app
 
-# Copy the binary from the builder stage
+# Copy the binaries from the builder stage
 COPY --from=builder /app/shopping-experience .
+COPY --from=builder /app/migrator .
 
 # Create migrations directory (will be populated at runtime if needed)
 RUN mkdir -p /app/migrations/
 
 # Set executable permissions
 RUN chmod +x /app/shopping-experience
+RUN chmod +x /app/migrator
 
 # Expose the application port
 EXPOSE 8001

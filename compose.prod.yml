@@ -56,7 +56,7 @@ services:
     restart: "no"
     labels:
       - traefik.enable=false
-    command: go run cmd/migrator/main.go
+    command: /app/migrator
     networks:
       - traefik-shared
     environment:

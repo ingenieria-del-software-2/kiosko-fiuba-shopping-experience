@@ -64,12 +64,12 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      target: builder
-    image: shopping-experience-builder:${SHOPPING_EXPERIENCE_VERSION:-latest}
+      target: prod
+    image: shopping-experience:${SHOPPING_EXPERIENCE_VERSION:-latest}
     restart: "no"
     labels:
       - traefik.enable=false
-    command: go run cmd/migrator/main.go
+    command: /app/migrator
     networks:
       - default
     environment:
@@ -82,12 +82,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      - ./cmd:/app/cmd
-      - ./internal:/app/internal
-      - ./pkg:/app/pkg
-      - ./go.mod:/app/go.mod
-      - ./go.sum:/app/go.sum
 
 volumes:
   shopping-experience-db-data:
